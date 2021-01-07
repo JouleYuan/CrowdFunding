@@ -96,7 +96,7 @@ const abi = [
 		"type": "function"
 	}
 ];
-const address = '0x1FEbC535Ad62b2E0fF789f3d3b4B2852Ce5C7e8D';
+const address = '0x36a8D3CbF1dB36847371947374F508DFA62001f4';
 const instance = new web3.eth.Contract(abi, address);
 
 export default instance;

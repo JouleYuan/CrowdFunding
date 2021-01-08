@@ -1,15 +1,22 @@
 import React, {Component} from 'react';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+} from 'react-router-dom';
 import './App.css';
 import web3 from './utils/InitWeb3';
 import crowdfunding from './eth/CrowdFunding';
 import project from './eth/Project';
-import { Layout, Menu } from 'antd';
-import ProjectTable from './components/ProjectTable';
-import CreateProject from './components/CreateProject';
-
-const { Header, Content, Footer } = Layout;
+import AllProjects from './page/AllProjects';
+import Project from './page/Project';
 
 class App extends Component{
+  refreshAccount = async() => {
+    const accounts = await web3.eth.getAccounts();
+    this.setState({currentAccount: accounts[0]});
+  }
+
   getProjects = async() => {
     console.log('get projects');
     const newProjectsInfo = [];
@@ -22,14 +29,14 @@ class App extends Component{
           from: this.state.currentAccount,
         });
         projectInfo.contract = projectInstance;
-        projectInfo.projectTarget_eth = web3.utils.fromWei(projectInfo.projectTarget) + 'eth';
-        projectInfo.projectBalance_eth = web3.utils.fromWei(projectInfo.projectBalance) + 'eth';
-        projectInfo.projectTotal_eth = web3.utils.fromWei(projectInfo.projectTotal) + 'eth';
-        projectInfo.projectContribution_eth = web3.utils.fromWei(projectInfo.projectContribution) + 'eth';
-        projectInfo.projectTarget += 'wei';
-        projectInfo.projectBalance += 'wei';
-        projectInfo.projectTotal += 'wei';
-        projectInfo.projectContribution += 'wei';
+        projectInfo.projectTarget_eth = web3.utils.fromWei(projectInfo.projectTarget) + 'ETH';
+        projectInfo.projectBalance_eth = web3.utils.fromWei(projectInfo.projectBalance) + 'ETH';
+        projectInfo.projectTotal_eth = web3.utils.fromWei(projectInfo.projectTotal) + 'ETH';
+        projectInfo.projectContribution_eth = web3.utils.fromWei(projectInfo.projectContribution) + 'ETH';
+        projectInfo.projectTarget += 'WEI';
+        projectInfo.projectBalance += 'WEI';
+        projectInfo.projectTotal += 'WEI';
+        projectInfo.projectContribution += 'WEI';
         projectInfo.projectStartTime = new Date(Number(projectInfo.projectStartTime) * 1000).toLocaleString("en-GB");
         projectInfo.projectDeadline = new Date(Number(projectInfo.projectDeadline) * 1000).toLocaleString("en-GB");
         if(projectInfo.projectCompleteTime === "0") projectInfo.projectCompleteTime = '-';
@@ -64,6 +71,25 @@ class App extends Component{
     this.getProjects();
   }
 
+  createDraw = async(index, title, description, amount) => {
+    try{
+      console.log('create draw');
+      console.log(index);
+      console.log(this.state.projectsInfo)
+      console.log(this.state.projectsInfo[index]);
+      const projectContract = this.state.projectsInfo[index].contract;
+      
+      await projectContract.methods.createUsage(title, description, web3.utils.toWei(amount)).send({
+        from: this.state.currentAccount,
+        gas: '3000000',
+      });
+      alert('Creation Succeeded');
+    } catch(e) {
+      console.log(e);
+      alert('Creation Failed');
+    }
+  }
+
   contribute = async(index, amount) => {
     try{
       console.log('contribute');
@@ -86,41 +112,44 @@ class App extends Component{
     this.state = {
       currentAccount: '',
       projectsInfo: [],
-      newProject: {},
     };
   };
 
   async componentDidMount() {
-    const accounts = await web3.eth.getAccounts();
-    this.setState({currentAccount: accounts[0]});
-    this.getProjects();
+    await this.refreshAccount();
+    await this.getProjects();
   }
 
   render() {
     return (
       <div className="App">
-        <Layout className="layout">
-          <Header>
-            <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['1']} >
-              <Menu.Item key="1">All Projects</Menu.Item>
-              <Menu.Item key="2">My Projects</Menu.Item>
-              <Menu.Item key="3">My Contributions</Menu.Item>
-            </Menu>
-          </Header>
-          <Content style={{ padding: '0 50px' }}>
-            <CreateProject
-              currentAccount={this.state.currentAccount}
-              createProject={this.createProject}
-            ></CreateProject>
-            <div className="site-layout-content">
-              <ProjectTable
+        <Router>
+          <Switch>
+            <Route exact path="/">
+              <AllProjects
+                currentAccount={this.state.currentAccount}
                 projectsInfo={this.state.projectsInfo}
+                getProjects={this.getProjects}
+                refreshAccount={this.refreshAccount}
+                createProject={this.createProject}
+                createDraw={this.createDraw}
                 contribute={this.contribute}
-              ></ProjectTable>
-            </div>
-          </Content>
-          <Footer style={{ textAlign: 'center' }}>Crowd Funding ©2021 Created by Yuan Haoran</Footer>
-        </Layout>
+              ></AllProjects>
+            </Route>
+            <Route path="/project/:index" children={
+              <Project
+                currentAccount={this.state.currentAccount}
+                projectsInfo={this.state.projectsInfo}
+                getProjects={this.getProjects}
+                refreshAccount={this.refreshAccount}
+                createProject={this.createProject}
+                createDraw={this.createDraw}
+                contribute={this.contribute}
+              ></Project>
+            }>
+            </Route>
+          </Switch>
+        </Router>
       </div>
     )
   }

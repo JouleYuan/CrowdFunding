@@ -1,31 +1,6 @@
 import React, {Component} from 'react';
 import { Table, Modal, Button, Form, Input, InputNumber, Col, Row } from 'antd';
 
-/*
-const data = [
-  {
-    key: 1,
-    projectTitle: 'project1',
-    projectDescription: 'Help the poor',
-    projectTarget: 20,
-    projectStartTime: '2021.1.6 20:54:23',
-    projectDeadline: '2021.1.6 20:54:23',
-    projectCompleteTime: '2021.1.6 20:54:23',
-    projectEndTime: '2021.1.6 20:54:23',
-    projectBalance: 0,
-    projectTotal: 0,
-    projectContribution: 0,
-    projectState: 'Ongoing',
-  },
-];
-*/
-
-const layout = {
-  labelCol: { span: 4 },
-  wrapperCol: { span: 19 },
-  whiteCol: {span: 1}
-};
-
 const validateMessages = {
   required: '${label} is required!',
   types: {
@@ -114,23 +89,23 @@ class ProjectTable extends Component{
           visible={this.state.visible}
           onCancel={this.handleCancel}
           footer={null}
-          width="50%"
+          width="400px"
           destroyOnClose="true"
         >
-          <Form {...layout} name="nest-messages" onFinish={this.onFinish} validateMessages={validateMessages} preserve={false}>
+          <Form name="nest-messages" onFinish={this.onFinish} validateMessages={validateMessages} preserve={false}>
             <Form.Item name={['amount']} label="Amount" rules={[{ pattern: '^(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*))$', required: true }]}>
               <Input />
             </Form.Item>
-            <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>
+            <Form.Item wrapperCol={{ span: 0, offset: 5 }}>
               <Row>
                 <Col span={12}>
                   <Button onClick={this.handleCancel}>
-                    取消
+                    Cancel
                   </Button>
                 </Col>
                 <Col span={12}>
                   <Button type="primary" htmlType="submit">
-                    确认
+                    Submit
                   </Button>
                 </Col>
               </Row>

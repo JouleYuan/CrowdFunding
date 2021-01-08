@@ -71,12 +71,12 @@ class CreateProject extends Component{
               <Row>
                 <Col span={12}>
                   <Button onClick={this.handleCancel}>
-                    取消
+                    Cancel
                   </Button>
                 </Col>
                 <Col span={12}>
                   <Button type="primary" htmlType="submit">
-                    确认
+                    Submit
                   </Button>
                 </Col>
               </Row>

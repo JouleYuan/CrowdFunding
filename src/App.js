@@ -69,7 +69,7 @@ class App extends Component{
         const projectInfo = await projectInstance.methods.getDetail().call({
           from: this.state.currentAccount,
         });
-        if(projectInstance.projectCreator === this.state.currentAccount){
+        if(projectInfo.projectCreator === this.state.currentAccount){
           projectInfo.contract = projectInstance;
           projectInfo.projectTarget_eth = web3.utils.fromWei(projectInfo.projectTarget) + 'ETH';
           projectInfo.projectBalance_eth = web3.utils.fromWei(projectInfo.projectBalance) + 'ETH';
@@ -112,7 +112,7 @@ class App extends Component{
         const projectInfo = await projectInstance.methods.getDetail().call({
           from: this.state.currentAccount,
         });
-        if(projectInstance.projectContribution !== '0'){
+        if(projectInfo.projectContribution !== '0'){
           projectInfo.contract = projectInstance;
           projectInfo.projectTarget_eth = web3.utils.fromWei(projectInfo.projectTarget) + 'ETH';
           projectInfo.projectBalance_eth = web3.utils.fromWei(projectInfo.projectBalance) + 'ETH';
@@ -240,6 +240,7 @@ class App extends Component{
                 createProject={this.createProject}
                 createDraw={this.createDraw}
                 contribute={this.contribute}
+                index='2'
               ></AllProjects>
             </Route>
             <Route exact path="/contributed">
@@ -251,6 +252,7 @@ class App extends Component{
                 createProject={this.createProject}
                 createDraw={this.createDraw}
                 contribute={this.contribute}
+                index='3'
               ></AllProjects>
             </Route>
             <Route path="/">
@@ -262,6 +264,7 @@ class App extends Component{
                 createProject={this.createProject}
                 createDraw={this.createDraw}
                 contribute={this.contribute}
+                index='1'
               ></AllProjects>
             </Route>
           </Switch>

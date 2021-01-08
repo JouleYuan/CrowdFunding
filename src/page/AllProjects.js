@@ -11,13 +11,14 @@ class AllProjects extends Component{
   async componentDidMount() {
     await this.props.refreshAccount();
     await this.props.getProjects();
+    console.log(this.props);
   }
 
   render() {
     return (
       <Layout className="layout">
         <Header>
-          <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['1']} >
+          <Menu theme="dark" mode="horizontal" defaultSelectedKeys={[this.props.index]} >
             <Menu.Item key="1">
               <Link to="/">All Projects</Link>
             </Menu.Item>

@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
-import { Table, Tag } from 'antd';
-import Contribute from './Contribute';
+import { Table, Tag, Space } from 'antd';
 
 class DrawTable extends Component{
   constructor(){
@@ -39,13 +38,13 @@ class DrawTable extends Component{
           dataIndex: '',
           key: 'x',
           render: (text, record, index) => {
-            if (this.props.currentAccount === record.creator) return (<></>); 
+            if (this.props.projectInfo.projectContribution==="0WEI") return (<></>); 
             else {
-              if (record.usageState === "Ongoing") return (
-                <Contribute
-                  index={index}
-                  contribute={this.props.contribute}
-                ></Contribute>
+              if (record.usageState === "Ongoing" && record.voted === false) return (
+                <Space size="middle">
+                  <a onClick={()=>this.props.vote(index, true)}>Approve</a>
+                  <a onClick={()=>this.props.vote(index, false)}>Disapprove</a>
+                </Space>
               );
               else return (<></>);
             }

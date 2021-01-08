@@ -43,7 +43,11 @@ class App extends Component{
         else projectInfo.projectCompleteTime = new Date(Number(projectInfo.projectCompleteTime) * 1000).toLocaleString("en-GB");
         if(projectInfo.projectEndTime === "0") projectInfo.projectEndTime = '-';
         else projectInfo.projectEndTime = new Date(Number(projectInfo.projectEndTime) * 1000).toLocaleString("en-GB");
-        if(projectInfo.projectState === "0") projectInfo.projectState = 'Ongoing';
+        if(projectInfo.projectState === "0"){
+          let timestamp = (new Date()).getTime();
+          if(timestamp > Number(projectInfo.projectDeadline) * 1000) projectInfo.projectState = 'Failed';
+          else projectInfo.projectState = 'Ongoing';
+        } 
         else if(projectInfo.projectState === "1") projectInfo.projectState = 'Failed';
         else if(projectInfo.projectState === "2") projectInfo.projectState = 'Succeeded';
         else if(projectInfo.projectState === "3") projectInfo.projectState = 'Paidoff';
@@ -52,6 +56,92 @@ class App extends Component{
       })
     );
     this.setState({projectsInfo: newProjectsInfo});
+  }
+
+  getMyProjects = async() => {
+    console.log('get projects');
+    const newProjectsInfo = [];
+    const projects = await crowdfunding.methods.getProjects().call();
+    let cnt = 1;
+    await Promise.all(
+      projects.map(async projectAddress => {
+        const projectInstance = project(projectAddress);
+        const projectInfo = await projectInstance.methods.getDetail().call({
+          from: this.state.currentAccount,
+        });
+        if(projectInstance.projectCreator === this.state.currentAccount){
+          projectInfo.contract = projectInstance;
+          projectInfo.projectTarget_eth = web3.utils.fromWei(projectInfo.projectTarget) + 'ETH';
+          projectInfo.projectBalance_eth = web3.utils.fromWei(projectInfo.projectBalance) + 'ETH';
+          projectInfo.projectTotal_eth = web3.utils.fromWei(projectInfo.projectTotal) + 'ETH';
+          projectInfo.projectContribution_eth = web3.utils.fromWei(projectInfo.projectContribution) + 'ETH';
+          projectInfo.projectTarget += 'WEI';
+          projectInfo.projectBalance += 'WEI';
+          projectInfo.projectTotal += 'WEI';
+          projectInfo.projectContribution += 'WEI';
+          projectInfo.projectStartTime = new Date(Number(projectInfo.projectStartTime) * 1000).toLocaleString("en-GB");
+          projectInfo.projectDeadline = new Date(Number(projectInfo.projectDeadline) * 1000).toLocaleString("en-GB");
+          if(projectInfo.projectCompleteTime === "0") projectInfo.projectCompleteTime = '-';
+          else projectInfo.projectCompleteTime = new Date(Number(projectInfo.projectCompleteTime) * 1000).toLocaleString("en-GB");
+          if(projectInfo.projectEndTime === "0") projectInfo.projectEndTime = '-';
+          else projectInfo.projectEndTime = new Date(Number(projectInfo.projectEndTime) * 1000).toLocaleString("en-GB");
+          if(projectInfo.projectState === "0"){
+            let timestamp = (new Date()).getTime();
+            if(timestamp > Number(projectInfo.projectDeadline) * 1000) projectInfo.projectState = 'Failed';
+            else projectInfo.projectState = 'Ongoing';
+          } 
+          else if(projectInfo.projectState === "1") projectInfo.projectState = 'Failed';
+          else if(projectInfo.projectState === "2") projectInfo.projectState = 'Succeeded';
+          else if(projectInfo.projectState === "3") projectInfo.projectState = 'Paidoff';
+          projectInfo.key = cnt++;
+          newProjectsInfo.push(projectInfo);
+        }
+      })
+    );
+    this.setState({myProjectsInfo: newProjectsInfo});
+  }
+
+  getContributedProjects = async() => {
+    console.log('get projects');
+    const newProjectsInfo = [];
+    const projects = await crowdfunding.methods.getProjects().call();
+    let cnt = 1;
+    await Promise.all(
+      projects.map(async projectAddress => {
+        const projectInstance = project(projectAddress);
+        const projectInfo = await projectInstance.methods.getDetail().call({
+          from: this.state.currentAccount,
+        });
+        if(projectInstance.projectContribution !== '0'){
+          projectInfo.contract = projectInstance;
+          projectInfo.projectTarget_eth = web3.utils.fromWei(projectInfo.projectTarget) + 'ETH';
+          projectInfo.projectBalance_eth = web3.utils.fromWei(projectInfo.projectBalance) + 'ETH';
+          projectInfo.projectTotal_eth = web3.utils.fromWei(projectInfo.projectTotal) + 'ETH';
+          projectInfo.projectContribution_eth = web3.utils.fromWei(projectInfo.projectContribution) + 'ETH';
+          projectInfo.projectTarget += 'WEI';
+          projectInfo.projectBalance += 'WEI';
+          projectInfo.projectTotal += 'WEI';
+          projectInfo.projectContribution += 'WEI';
+          projectInfo.projectStartTime = new Date(Number(projectInfo.projectStartTime) * 1000).toLocaleString("en-GB");
+          projectInfo.projectDeadline = new Date(Number(projectInfo.projectDeadline) * 1000).toLocaleString("en-GB");
+          if(projectInfo.projectCompleteTime === "0") projectInfo.projectCompleteTime = '-';
+          else projectInfo.projectCompleteTime = new Date(Number(projectInfo.projectCompleteTime) * 1000).toLocaleString("en-GB");
+          if(projectInfo.projectEndTime === "0") projectInfo.projectEndTime = '-';
+          else projectInfo.projectEndTime = new Date(Number(projectInfo.projectEndTime) * 1000).toLocaleString("en-GB");
+          if(projectInfo.projectState === "0"){
+            let timestamp = (new Date()).getTime();
+            if(timestamp > Number(projectInfo.projectDeadline) * 1000) projectInfo.projectState = 'Failed';
+            else projectInfo.projectState = 'Ongoing';
+          } 
+          else if(projectInfo.projectState === "1") projectInfo.projectState = 'Failed';
+          else if(projectInfo.projectState === "2") projectInfo.projectState = 'Succeeded';
+          else if(projectInfo.projectState === "3") projectInfo.projectState = 'Paidoff';
+          projectInfo.key = cnt++;
+          newProjectsInfo.push(projectInfo);
+        }
+      })
+    );
+    this.setState({contributedProjectsInfo: newProjectsInfo});
   }
 
   createProject = async(title, description, duration, target) => {
@@ -112,12 +202,16 @@ class App extends Component{
     this.state = {
       currentAccount: '',
       projectsInfo: [],
+      myProjectsInfo: [],
+      contributedProjectsInfo: [],
     };
   };
 
   async componentDidMount() {
     await this.refreshAccount();
     await this.getProjects();
+    await this.getMyProjects();
+    await this.getContributedProjects();
   }
 
   render() {
@@ -125,17 +219,6 @@ class App extends Component{
       <div className="App">
         <Router>
           <Switch>
-            <Route exact path="/">
-              <AllProjects
-                currentAccount={this.state.currentAccount}
-                projectsInfo={this.state.projectsInfo}
-                getProjects={this.getProjects}
-                refreshAccount={this.refreshAccount}
-                createProject={this.createProject}
-                createDraw={this.createDraw}
-                contribute={this.contribute}
-              ></AllProjects>
-            </Route>
             <Route path="/project/:index" children={
               <Project
                 currentAccount={this.state.currentAccount}
@@ -147,6 +230,39 @@ class App extends Component{
                 contribute={this.contribute}
               ></Project>
             }>
+            </Route>
+            <Route exact path="/mine">
+              <AllProjects
+                currentAccount={this.state.currentAccount}
+                projectsInfo={this.state.myProjectsInfo}
+                getProjects={this.getMyProjects}
+                refreshAccount={this.refreshAccount}
+                createProject={this.createProject}
+                createDraw={this.createDraw}
+                contribute={this.contribute}
+              ></AllProjects>
+            </Route>
+            <Route exact path="/contributed">
+              <AllProjects
+                currentAccount={this.state.currentAccount}
+                projectsInfo={this.state.contributedProjectsInfo}
+                getProjects={this.getContributedProjects}
+                refreshAccount={this.refreshAccount}
+                createProject={this.createProject}
+                createDraw={this.createDraw}
+                contribute={this.contribute}
+              ></AllProjects>
+            </Route>
+            <Route path="/">
+              <AllProjects
+                currentAccount={this.state.currentAccount}
+                projectsInfo={this.state.projectsInfo}
+                getProjects={this.getProjects}
+                refreshAccount={this.refreshAccount}
+                createProject={this.createProject}
+                createDraw={this.createDraw}
+                contribute={this.contribute}
+              ></AllProjects>
             </Route>
           </Switch>
         </Router>

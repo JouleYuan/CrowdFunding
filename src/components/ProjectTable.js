@@ -18,15 +18,10 @@ class ProjectTable extends Component{
           dataIndex: 'projectTitle', 
           key: 'projectTitle',
           render: (text, record, index) => {
-            if(record.projectState === "Succeeded" || record.projectState === "Paidout"){
-              if (this.props.currentAccount === record.projectCreator){
-                const url = '/project/' + index;
-                return (
-                  <a href={url}>{text}</a>
-                );
-              }
-            }
-            return text;
+            const url = '/project/' + index;
+            return (
+              <a href={url}>{text}</a>
+            );
           }
         },
         { title: 'Target', dataIndex: 'projectTarget_eth', key: 'projectTarget_eth' },

@@ -1,6 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.4.22 <0.9.0;
 
+/*
+still has vital state problem which can leads to serious vote bug
+*/
+
 contract Project {
     enum State {Ongoing, Failed, Succeeded, Paidoff}
 
@@ -27,8 +31,10 @@ contract Project {
         uint256 startTime;
         uint256 endTime;
         State state;
+        mapping(address => bool) voted;
     }
-    Usage[] private usages;
+    uint256 numUsages;
+    mapping(uint256 => Usage) usages;
 
     event ContributionReceived(address contributor, uint amount, uint currentBalance);
     event CreatorPaid(address recipient);
@@ -69,7 +75,8 @@ contract Project {
     }
 
     modifier usageInState(State _state, uint256 usageId){
-        require(usages[usageId].state == _state, "Invalid Usage State");
+        Usage storage usage = usages[usageId];
+        require(usage.state == _state, "Invalid Usage State");
         _;
     }
 
@@ -105,8 +112,16 @@ contract Project {
         uint256 usageAmount
     ) external isCreator() inState(State.Succeeded) hasEnoughBalance(usageAmount) {
         uint256 usageStartTime = block.timestamp;
-        Usage memory newUsage = Usage(usageTitle, usageDescription, usageAmount, 0, 0, usageStartTime, 0, State.Ongoing);
-        usages.push(newUsage);
+        uint256 usageId = numUsages++;
+        Usage storage newUsage = usages[usageId];
+        newUsage.title = usageTitle;
+        newUsage.description = usageDescription;
+        newUsage.amount = usageAmount;
+        newUsage.approvalContribution = 0;
+        newUsage.disapprovalContribution = 0;
+        newUsage.startTime = usageStartTime;
+        newUsage.endTime = 0;
+        newUsage.state = State.Ongoing;
         balance -= usageAmount;
         checkUsingState();
     }
@@ -115,10 +130,12 @@ contract Project {
         bool approve,
         uint256 usageId
     ) external isContributor() inState(State.Succeeded) usageInState(State.Ongoing, usageId) {
+        Usage storage usage = usages[usageId];
+        usage.voted[msg.sender] = true;
         if(approve){
-            usages[usageId].approvalContribution += contributions[msg.sender];
+            usage.approvalContribution += contributions[msg.sender];
         }else{
-            usages[usageId].disapprovalContribution += contributions[msg.sender];
+            usage.disapprovalContribution += contributions[msg.sender];
         }
         checkUsageState(usageId);
     }
@@ -144,7 +161,7 @@ contract Project {
     }
 
     function getUsageNum() external view returns(uint256) {
-        return usages.length;
+        return numUsages;
     }
 
     function getUsageDetail(uint256 usageId) external view returns(
@@ -155,12 +172,13 @@ contract Project {
         uint256 usageDisapprovalContribution,
         uint256 usageStartTime,
         uint256 usageEndTime,
-        State usageState
+        State usageState,
+        bool voted
     ) {
-        Usage memory usage = usages[usageId];
+        Usage storage usage = usages[usageId];
         return (
             usage.title, usage.description, usage.amount, usage.approvalContribution,
-            usage.disapprovalContribution, usage.startTime, usage.endTime, usage.state
+            usage.disapprovalContribution, usage.startTime, usage.endTime, usage.state, usage.voted[msg.sender]
         );
     }
 
@@ -184,20 +202,22 @@ contract Project {
     }
 
     function checkUsageState(uint256 usageId) private {
-        if(2 * usages[usageId].approvalContribution >= total){
-            usages[usageId].state = State.Paidoff;
+        Usage storage usage = usages[usageId];
+        if(2 * usage.approvalContribution >= total){
+            usage.state = State.Paidoff;
             pay(usageId);
-            usages[usageId].endTime = block.timestamp;
+            usage.endTime = block.timestamp;
         }
-        else if(2 * usages[usageId].disapprovalContribution > total){
-            usages[usageId].state = State.Failed;
-            balance += usages[usageId].amount;
-            usages[usageId].endTime = block.timestamp;
+        else if(2 * usage.disapprovalContribution > total){
+            usage.state = State.Failed;
+            balance += usage.amount;
+            usage.endTime = block.timestamp;
         }
     }
 
     function pay(uint256 usageId) private {
-        creator.transfer(usages[usageId].amount);
+        Usage storage usage = usages[usageId];
+        creator.transfer(usage.amount);
     }
 
     function refund() private {

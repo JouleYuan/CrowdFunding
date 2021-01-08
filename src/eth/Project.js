@@ -265,6 +265,11 @@ const abi = [
         "internalType": "enum Project.State",
         "name": "usageState",
         "type": "uint8"
+      },
+      {
+        "internalType": "bool",
+        "name": "voted",
+        "type": "bool"
       }
     ],
     "payable": false,

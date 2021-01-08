@@ -21,8 +21,12 @@ class AllProjects extends Component{
             <Menu.Item key="1">
               <Link to="/">All Projects</Link>
             </Menu.Item>
-            <Menu.Item key="2">My Projects</Menu.Item>
-            <Menu.Item key="3">My Contributions</Menu.Item>
+            <Menu.Item key="2">
+              <Link to="/mine">My Projects</Link>
+            </Menu.Item>
+            <Menu.Item key="3">
+              <Link to="/contributed">My Contributions</Link>
+            </Menu.Item>
           </Menu>
         </Header>
         <Content style={{ padding: '0 50px' }}>

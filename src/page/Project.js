@@ -39,6 +39,23 @@ class Project extends Component{
     this.setState({drawsInfo: newDrawsInfo});
   }
 
+  vote = async(index, ballot) => {
+    try{
+      console.log('vote');
+      console.log(index);
+      const projectContract = this.state.projectInfo.contract;
+      await projectContract.methods.vote(ballot, index).send({
+        from: this.props.currentAccount,
+        gas: '3000000',
+      })
+      alert('Vote Succeeded');
+    } catch(e) {
+      console.log(e);
+      alert('Vote Failed');
+    }
+    this.getDraws();
+  }
+
   constructor() {
     super();
     this.state = {
@@ -54,7 +71,6 @@ class Project extends Component{
       projectInfo: this.props.projectsInfo[this.props.match.params.index],
     })
     await this.getDraws();
-    console.log(this.state);
   }
 
   render() {
@@ -77,7 +93,8 @@ class Project extends Component{
             <DrawTable
               currentAccount={this.props.currentAccount}
               drawsInfo={this.state.drawsInfo}
-              contribute={this.props.contribute}
+              projectInfo={this.state.projectInfo}
+              vote={this.vote}
             ></DrawTable>
           </div>
         </Content>

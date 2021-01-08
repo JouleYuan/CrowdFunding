@@ -49,7 +49,7 @@ class CreateDraw extends Component{
           visible={this.state.visible}
           onCancel={this.handleCancel}
           footer={null}
-          width="400px"
+          width="50%"
           destroyOnClose="true"
         >
           <Form {...layout} name="nest-messages" onFinish={this.onFinish} validateMessages={validateMessages} preserve={false}>

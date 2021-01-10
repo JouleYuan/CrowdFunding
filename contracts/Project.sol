@@ -17,6 +17,7 @@ contract Project {
     uint256 private completeTime;
     uint256 private endTime;
     uint256 private balance = 0;
+    uint256 private usage_balance = 0;
     uint256 private total = 0;
     State private state = State.Ongoing;
     address payable[] private contributors;
@@ -35,9 +36,6 @@ contract Project {
     }
     uint256 numUsages;
     mapping(uint256 => Usage) usages;
-
-    event ContributionReceived(address contributor, uint amount, uint currentBalance);
-    event CreatorPaid(address recipient);
 
     modifier isCreator(){
         require(creator == msg.sender, "Not Creator");
@@ -70,7 +68,7 @@ contract Project {
     }
 
     modifier hasEnoughBalance(uint256 _amount){
-        require(_amount <= balance, "Not Enough Balance");
+        require(_amount <= usage_balance, "Not Enough Balance");
         _;
     }
 
@@ -101,8 +99,8 @@ contract Project {
         contributors.push(msg.sender);
         contributions[msg.sender] += msg.value;
         balance += msg.value;
+        usage_balance += msg.value;
         total += msg.value;
-        emit ContributionReceived(msg.sender, msg.value, balance);
         checkRaisingState();
     }
 
@@ -122,8 +120,7 @@ contract Project {
         newUsage.startTime = usageStartTime;
         newUsage.endTime = 0;
         newUsage.state = State.Ongoing;
-        balance -= usageAmount;
-        checkUsingState();
+        usage_balance -= usageAmount;
     }
 
     function vote(
@@ -150,13 +147,14 @@ contract Project {
         uint256 projectCompleteTime,
         uint256 projectEndTime,
         uint256 projectBalance,
+        uint256 projectUsageBalance,
         uint256 projectTotal,
         uint256 projectContribution,
         State projectState
     ) {
         return (
             creator, title, description, target, startTime, deadline, 
-            completeTime, endTime, balance, total, contributions[msg.sender], state
+            completeTime, endTime, balance, usage_balance, total, contributions[msg.sender], state
         );
     }
 
@@ -205,12 +203,14 @@ contract Project {
         Usage storage usage = usages[usageId];
         if(2 * usage.approvalContribution >= total){
             usage.state = State.Paidoff;
+            balance -= usage.amount;
+            checkUsingState();
             pay(usageId);
             usage.endTime = block.timestamp;
         }
         else if(2 * usage.disapprovalContribution > total){
             usage.state = State.Failed;
-            balance += usage.amount;
+            usage_balance += usage.amount;
             usage.endTime = block.timestamp;
         }
     }

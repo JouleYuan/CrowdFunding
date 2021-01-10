@@ -26,8 +26,8 @@ class Project extends Component{
       if(drawInfo.usageEndTime === "0") drawInfo.usageEndTime = '-';
       else drawInfo.usageEndTime = new Date(Number(drawInfo.usageEndTime) * 1000).toLocaleString("en-GB");
       const total = Number(this.state.projectInfo.projectTotal.substring(0, this.state.projectInfo.projectTotal.length-3));
-      drawInfo.approval = Number(drawInfo.usageApprovalContribution) / total;
-      drawInfo.disapproval = Number(drawInfo.usageDisapprovalContribution) / total;
+      drawInfo.approval = Number(drawInfo.usageApprovalContribution) / total * 100 + '%';
+      drawInfo.disapproval = Number(drawInfo.usageDisapprovalContribution) / total * 100 + '%';
       drawInfo.creator = this.state.projectInfo.projectCreator;
       if(drawInfo.usageState === "0") drawInfo.usageState = 'Ongoing';
       else if(drawInfo.usageState === "1") drawInfo.usageState = 'Failed';
@@ -81,8 +81,12 @@ class Project extends Component{
             <Menu.Item key="1">
               <Link to="/">All Projects</Link>
             </Menu.Item>
-            <Menu.Item key="2">My Projects</Menu.Item>
-            <Menu.Item key="3">My Contributions</Menu.Item>
+            <Menu.Item key="2">
+              <Link to="/mine">My Projects</Link>
+            </Menu.Item>
+            <Menu.Item key="3">
+              <Link to="/contributed">My Contributions</Link>
+            </Menu.Item>
           </Menu>
         </Header>
         <Content style={{ padding: '0 50px' }}>

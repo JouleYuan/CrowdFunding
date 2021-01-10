@@ -1,7 +1,9 @@
 import React, {Component} from 'react';
-import { Table, Tag } from 'antd';
+import { Table, Tag, Typography } from 'antd';
 import Contribute from './Contribute';
 import CreateDraw from './CreateDraw';
+
+const { Title, Paragraph, Text, Link } = Typography;
 
 class ProjectTable extends Component{
   constructor(){
@@ -83,17 +85,41 @@ class ProjectTable extends Component{
         columns={this.state.columns}
         expandable={{
           expandedRowRender: record => <div>
-              <p style={{ marginLeft: 30 }}>Title: {record.projectTitle}</p>
-              <p style={{ marginLeft: 30 }}>State: {record.projectState}</p>
-              <p style={{ marginLeft: 30 }}>Target Amount: {record.projectTarget_eth} ({record.projectTarget})</p>
-              <p style={{ marginLeft: 30 }}>Total Raised Amount: {record.projectTotal_eth} ({record.projectTotal})</p>
-              <p style={{ marginLeft: 30 }}>Fund Balance: {record.projectBalance_eth} ({record.projectBalance})</p>
-              <p style={{ marginLeft: 30 }}>Your Contribution: {record.projectContribution_eth} ({record.projectContribution})</p>
-              <p style={{ marginLeft: 30 }}>Project Start Time: {record.projectStartTime}</p>
-              <p style={{ marginLeft: 30 }}>Raising Deadline: {record.projectDeadline}</p>
-              <p style={{ marginLeft: 30 }}>Raising Complete Time: {record.projectCompleteTime}</p>
-              <p style={{ marginLeft: 30 }}>Project End Time: {record.projectEndTime}</p>
-              <p style={{ marginLeft: 30 }}>Description: {record.projectDescription}</p>
+              <Typography>
+                <Paragraph>
+                  <Text strong>Title:</Text> {record.projectTitle}
+                </Paragraph>
+                <Paragraph>
+                  <Text strong>State:</Text> {record.projectState}
+                </Paragraph>
+                <Paragraph>
+                  <Text strong>Target Amount:</Text> {record.projectTarget_eth} ({record.projectTarget})
+                </Paragraph>
+                <Paragraph>
+                  <Text strong>Total Raised Amount:</Text> {record.projectTotal_eth} ({record.projectTotal})
+                </Paragraph>
+                <Paragraph>
+                  <Text strong>Fund Balance:</Text> {record.projectBalance_eth} ({record.projectBalance})
+                </Paragraph>
+                <Paragraph>
+                  <Text strong>Your Contribution:</Text> {record.projectContribution_eth} ({record.projectContribution})
+                </Paragraph>
+                <Paragraph>
+                  <Text strong>Project Start Time:</Text> {record.projectStartTime}
+                </Paragraph>
+                <Paragraph>
+                  <Text strong>Raising Deadline:</Text> {record.projectDeadline}
+                </Paragraph>
+                <Paragraph>
+                  <Text strong>Raising Complete Time:</Text> {record.projectCompleteTime}
+                </Paragraph>
+                <Paragraph>
+                  <Text strong>Project End Time:</Text> {record.projectEndTime}
+                </Paragraph>
+                <Paragraph>
+                  <Text strong>Description:</Text> {record.projectDescription}
+                </Paragraph>
+              </Typography>
             </div>,
         }}
         dataSource={this.props.projectsInfo}

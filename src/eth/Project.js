@@ -39,44 +39,6 @@ const abi = [
     "type": "constructor"
   },
   {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "contributor",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "currentBalance",
-        "type": "uint256"
-      }
-    ],
-    "name": "ContributionReceived",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "recipient",
-        "type": "address"
-      }
-    ],
-    "name": "CreatorPaid",
-    "type": "event"
-  },
-  {
     "constant": false,
     "inputs": [],
     "name": "contribute",
@@ -178,6 +140,11 @@ const abi = [
       {
         "internalType": "uint256",
         "name": "projectBalance",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "projectUsageBalance",
         "type": "uint256"
       },
       {

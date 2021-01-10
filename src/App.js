@@ -37,12 +37,6 @@ class App extends Component{
         projectInfo.projectBalance += 'WEI';
         projectInfo.projectTotal += 'WEI';
         projectInfo.projectContribution += 'WEI';
-        projectInfo.projectStartTime = new Date(Number(projectInfo.projectStartTime) * 1000).toLocaleString("en-GB");
-        projectInfo.projectDeadline = new Date(Number(projectInfo.projectDeadline) * 1000).toLocaleString("en-GB");
-        if(projectInfo.projectCompleteTime === "0") projectInfo.projectCompleteTime = '-';
-        else projectInfo.projectCompleteTime = new Date(Number(projectInfo.projectCompleteTime) * 1000).toLocaleString("en-GB");
-        if(projectInfo.projectEndTime === "0") projectInfo.projectEndTime = '-';
-        else projectInfo.projectEndTime = new Date(Number(projectInfo.projectEndTime) * 1000).toLocaleString("en-GB");
         if(projectInfo.projectState === "0"){
           let timestamp = (new Date()).getTime();
           if(timestamp > Number(projectInfo.projectDeadline) * 1000) projectInfo.projectState = 'Failed';
@@ -51,6 +45,12 @@ class App extends Component{
         else if(projectInfo.projectState === "1") projectInfo.projectState = 'Failed';
         else if(projectInfo.projectState === "2") projectInfo.projectState = 'Succeeded';
         else if(projectInfo.projectState === "3") projectInfo.projectState = 'Paidoff';
+        projectInfo.projectStartTime = new Date(Number(projectInfo.projectStartTime) * 1000).toLocaleString("en-GB");
+        projectInfo.projectDeadline = new Date(Number(projectInfo.projectDeadline) * 1000).toLocaleString("en-GB");
+        if(projectInfo.projectCompleteTime === "0") projectInfo.projectCompleteTime = '-';
+        else projectInfo.projectCompleteTime = new Date(Number(projectInfo.projectCompleteTime) * 1000).toLocaleString("en-GB");
+        if(projectInfo.projectEndTime === "0") projectInfo.projectEndTime = '-';
+        else projectInfo.projectEndTime = new Date(Number(projectInfo.projectEndTime) * 1000).toLocaleString("en-GB");
         projectInfo.key = cnt++;
         newProjectsInfo.push(projectInfo);
       })
@@ -144,11 +144,11 @@ class App extends Component{
     this.setState({contributedProjectsInfo: newProjectsInfo});
   }
 
-  createProject = async(title, description, duration, target) => {
+  createProject = async(title, description, deadline, target) => {
     try{
       console.log('create a project');
       await crowdfunding.methods.createProject(
-        title, description, duration, web3.utils.toWei(target.toString())
+        title, description, Math.round(deadline/1000), web3.utils.toWei(target.toString())
       ).send({
         from: this.state.currentAccount,
         gas: '3000000',

@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { Modal, Button, Form, Input, InputNumber, Col, Row } from 'antd';
+import { Modal, Button, Form, Input, DatePicker, Col, Row } from 'antd';
 
 const layout = {
   labelCol: { span: 4 },
@@ -9,13 +9,18 @@ const layout = {
 
 const validateMessages = {
   required: '${label} is required!',
-  types: {
-    target: '${label} is not a valid email!',
-    duration: '${label} is not a valid number!',
-  },
-  number: {
-    range: '${label} must be between ${min} and ${max}',
-  },
+};
+
+const number_rule = { 
+  pattern: '^(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*))$', 
+  required: true,
+  message: 'Please input a valid number!'
+};
+
+const time_rule = { 
+  type: 'object', 
+  required: true, 
+  message: 'Please select time!' 
 };
 
 class CreateProject extends Component{
@@ -28,8 +33,7 @@ class CreateProject extends Component{
   }
 
   onFinish = (values) => {
-    console.log(values);
-    this.props.createProject(values.title, values.description, values.duration, values.target);
+    this.props.createProject(values.title, values.description, values.deadline.valueOf(), values.target);
     this.setState({visible: false});
   };
 
@@ -58,13 +62,13 @@ class CreateProject extends Component{
             <Form.Item name={['title']} label="Title" rules={[{ required: true }]}>
               <Input />
             </Form.Item>
-            <Form.Item name={['target']} label="Target(eths)" rules={[{ type: 'number', min: 0, required: true}]}>
-              <InputNumber />
+            <Form.Item name={['target']} label="Target" rules={[number_rule]}>
+              <Input Input prefix="Ξ" suffix="ETH" />
             </Form.Item>
-            <Form.Item name={['duration']} label="Duration(days)" rules={[{ type: 'number', min: 0, max: 999, required: true }]}>
-              <InputNumber />
+            <Form.Item name={['deadline']} label="Duration" rules={[time_rule]}>
+              <DatePicker showTime format="YYYY-MM-DD HH:mm:ss"/>
             </Form.Item>
-            <Form.Item name={['description']} label="Description" >
+            <Form.Item name={['description']} label="Description" rules={[{ required: true }]}>
               <Input.TextArea rows={8}/>
             </Form.Item>
             <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>

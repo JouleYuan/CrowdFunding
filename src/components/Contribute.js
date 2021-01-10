@@ -5,6 +5,11 @@ const validateMessages = {
   required: '${label} is required!',
 };
 
+const number_rule = { 
+  pattern: '^(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*))$',
+  required: true,
+ };
+
 class Contribute extends Component{
   showModal = (index) => {
     this.setState({
@@ -46,8 +51,8 @@ class Contribute extends Component{
           destroyOnClose="true"
         >
           <Form name="nest-messages" onFinish={this.onFinish} validateMessages={validateMessages} preserve={false}>
-            <Form.Item name={['amount']} label="Amount" rules={[{ pattern: '^(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*))$', required: true }]}>
-              <Input />
+            <Form.Item name={['amount']} label="Amount" rules={[]}>
+              <Input Input prefix="Ξ" suffix="ETH" />
             </Form.Item>
             <Form.Item wrapperCol={{ span: 0, offset: 5 }}>
               <Row>

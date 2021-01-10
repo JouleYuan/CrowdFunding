@@ -2,55 +2,6 @@ import web3 from '../utils/InitWeb3';
 
 const abi = [
 	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": false,
-				"internalType": "address",
-				"name": "contractAddress",
-				"type": "address"
-			},
-			{
-				"indexed": false,
-				"internalType": "address",
-				"name": "projectCreator",
-				"type": "address"
-			},
-			{
-				"indexed": false,
-				"internalType": "string",
-				"name": "projectTitle",
-				"type": "string"
-			},
-			{
-				"indexed": false,
-				"internalType": "string",
-				"name": "projectDescription",
-				"type": "string"
-			},
-			{
-				"indexed": false,
-				"internalType": "uint256",
-				"name": "projectTarget",
-				"type": "uint256"
-			},
-			{
-				"indexed": false,
-				"internalType": "uint256",
-				"name": "projectStartTime",
-				"type": "uint256"
-			},
-			{
-				"indexed": false,
-				"internalType": "uint256",
-				"name": "projectDeadline",
-				"type": "uint256"
-			}
-		],
-		"name": "ProjectCreated",
-		"type": "event"
-	},
-	{
 		"constant": false,
 		"inputs": [
 			{
@@ -65,7 +16,7 @@ const abi = [
 			},
 			{
 				"internalType": "uint256",
-				"name": "duration",
+				"name": "call_deadline",
 				"type": "uint256"
 			},
 			{
@@ -96,7 +47,7 @@ const abi = [
 		"type": "function"
 	}
 ];
-const address = '0x8D6D68D9aAC8CC39b39cA57F6c65f982FAc9deD9';
+const address = '0xA305BC95CBf8E6D4d540466C39C02DF3b2744031';
 const instance = new web3.eth.Contract(abi, address);
 
 export default instance;

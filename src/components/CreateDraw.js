@@ -11,6 +11,12 @@ const validateMessages = {
   required: '${label} is required!',
 };
 
+const number_rule = { 
+  pattern: '^(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*))$', 
+  required: true,
+  message: 'Please input a valid number!',
+};
+
 class CreateDraw extends Component{
   showModal = (index) => {
     this.setState({
@@ -56,8 +62,8 @@ class CreateDraw extends Component{
             <Form.Item name={['title']} label="Title" rules={[{ required: true }]}>
               <Input />
             </Form.Item>
-            <Form.Item name={['amount']} label="Amount" rules={[{ pattern: '^(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*))$', required: true }]}>
-              <Input />
+            <Form.Item name={['amount']} label="Amount" rules={[number_rule]}>
+              <Input Input prefix="Ξ" suffix="ETH" />
             </Form.Item>
             <Form.Item name={['description']} label="Description" rules={[{ required: true }]}>
               <Input.TextArea rows={8}/>

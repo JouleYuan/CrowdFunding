@@ -1,70 +1,55 @@
-# Getting Started with Create React App
+# Crowd Funding
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Crowd Funding is a distributed crowdfunding web platform, which is based on React web framework and solidity implemented smart contracts. On this platform, users can anonymously create crowdfunding projects, create draw requests, contribute to crowdfunding projects and vote for the draw requests.
 
-## Available Scripts
+## Build
 
-In the project directory, you can run:
+First, install [MetaMask](https://metamask.io/), [Ganache](https://www.trufflesuite.com/ganache) and truffle if you haven't installed them.
 
-### `yarn start`
+```shell
+npm install -g truffle
+```
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+After the installation, open Ganache and start a workspace. Make sure the host and port in `truffle-config.js` to be the same with the port in that workspace.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+```javascript
+// truffle-config.js
+development: {
+	host: "127.0.0.1",
+	port: 8545,
+	network_id: "*",
+}
+```
 
-### `yarn test`
+![ganache_port](.\public\ganache_port.png)
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Next, deploy the smart contract.
 
-### `yarn build`
+```shell
+truffle migrate
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+After that, replace the address in `src/eth/CrowdFunding.js`  with the address of CrowdFunding contract in Ganache.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```javascript
+// CrowdFunding.js
+const address = '0xA305BC95CBf8E6D4d540466C39C02DF3b2744031';
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+![ganache_address](./public/ganache_address.png)
 
-### `yarn eject`
+Finally, install all dependencies for this project.
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+```shell
+yarn install
+```
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Run
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+Start the application by the following command.
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+```shell
+yarn start
+```
 
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `yarn build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+![home](.\public\home.png)

@@ -20,7 +20,7 @@ class ProjectTable extends Component{
           dataIndex: 'projectTitle', 
           key: 'projectTitle',
           render: (text, record, index) => {
-            const url = '/project/' + index;
+            const url = '/project/' + (record.key - 1);
             return (
               <a href={url}>{text}</a>
             );

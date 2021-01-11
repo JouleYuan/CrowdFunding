@@ -93,9 +93,10 @@ class App extends Component{
           else if(projectInfo.projectState === "1") projectInfo.projectState = 'Failed';
           else if(projectInfo.projectState === "2") projectInfo.projectState = 'Succeeded';
           else if(projectInfo.projectState === "3") projectInfo.projectState = 'Paidoff';
-          projectInfo.key = cnt++;
+          projectInfo.key = cnt;
           newProjectsInfo.push(projectInfo);
         }
+        cnt++;
       })
     );
     this.setState({myProjectsInfo: newProjectsInfo});
@@ -136,9 +137,10 @@ class App extends Component{
           else if(projectInfo.projectState === "1") projectInfo.projectState = 'Failed';
           else if(projectInfo.projectState === "2") projectInfo.projectState = 'Succeeded';
           else if(projectInfo.projectState === "3") projectInfo.projectState = 'Paidoff';
-          projectInfo.key = cnt++;
+          projectInfo.key = cnt;
           newProjectsInfo.push(projectInfo);
         }
+        cnt++;
       })
     );
     this.setState({contributedProjectsInfo: newProjectsInfo});
